@@ -31,7 +31,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 
     public List<Usuario> findALL(){
-
         return repository.findAll();
     }
 
@@ -47,9 +46,15 @@ public class UsuarioServiceImpl implements UsuarioService {
         return repository.save(mapper.map(obj, Usuario.class));
     }
 
+    @Override
+    public void delete(Integer id) {
+        //se não existir ele chama uma execeção customizada
+         findById(id);
+         repository.deleteById(id);
+    }
+
     private void findByEmail(UsuarioDto obj){
         Optional<Usuario> Usuario = repository.findByEmail(obj.getEmail());
-
         //se o Id buscado for diferente do id que veio como parametro , significa que é um id de outro usuario
         if(Usuario.isPresent() && !Usuario.get().getId().equals(obj.getId()) ){
            throw new ViolacaoDedadosIntegradosException("Email ja cadastrado no sistema!");
