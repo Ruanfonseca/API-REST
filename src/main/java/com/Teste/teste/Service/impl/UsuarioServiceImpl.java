@@ -41,9 +41,17 @@ public class UsuarioServiceImpl implements UsuarioService {
         return repository.save(mapper.map(obj,Usuario.class));
     }
 
+    @Override
+    public Usuario update(UsuarioDto obj) {
+        findByEmail(obj);
+        return repository.save(mapper.map(obj, Usuario.class));
+    }
+
     private void findByEmail(UsuarioDto obj){
         Optional<Usuario> Usuario = repository.findByEmail(obj.getEmail());
-        if(Usuario.isPresent()){
+
+        //se o Id buscado for diferente do id que veio como parametro , significa que é um id de outro usuario
+        if(Usuario.isPresent() && !Usuario.get().getId().equals(obj.getId()) ){
            throw new ViolacaoDedadosIntegradosException("Email ja cadastrado no sistema!");
         }
     }
