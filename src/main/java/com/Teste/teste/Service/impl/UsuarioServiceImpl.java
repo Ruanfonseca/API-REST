@@ -7,6 +7,7 @@ import com.Teste.teste.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,5 +22,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         //se encontrar um objeto , retorne , senão , returne um obj nulo
        Optional<Usuario> obj = repository.findById(id);
        return obj.orElseThrow(()->new ObjetoNaoEncontrado("Objeto não encontrado"));
+    }
+
+
+    public List<Usuario> findALL(){
+        return repository.findAll();
     }
 }
