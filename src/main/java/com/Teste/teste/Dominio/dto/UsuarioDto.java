@@ -1,10 +1,11 @@
 package com.Teste.teste.Dominio.dto;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+
 
 @Data
 @AllArgsConstructor
@@ -14,6 +15,6 @@ public class UsuarioDto {
     private String nome;
     private String email;
 
-    @JsonIgnore // ignorando a senha
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // ignorando a senha quando retorna um dto com GET
     private String senha;
 }
