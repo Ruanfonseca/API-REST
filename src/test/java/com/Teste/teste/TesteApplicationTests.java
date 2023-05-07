@@ -10,7 +10,6 @@ class TesteApplicationTests {
 	@Test
 	void main() {
       TesteApplication.main(new String[]{});
-
 	}
 
 }
