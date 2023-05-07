@@ -4,6 +4,7 @@ import com.Teste.teste.Dominio.Usuario;
 import com.Teste.teste.Dominio.dto.UsuarioDto;
 import com.Teste.teste.Service.UsuarioService;
 import com.Teste.teste.Service.exceptions.ObjetoNaoEncontrado;
+import com.Teste.teste.Service.exceptions.ViolacaoDedadosIntegradosException;
 import com.Teste.teste.repository.UsuarioRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,20 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 
     public List<Usuario> findALL(){
+
         return repository.findAll();
     }
 
     @Override
     public Usuario create(UsuarioDto obj) {
+        findByEmail(obj);
         return repository.save(mapper.map(obj,Usuario.class));
+    }
+
+    private void findByEmail(UsuarioDto obj){
+        Optional<Usuario> Usuario = repository.findByEmail(obj.getEmail());
+        if(Usuario.isPresent()){
+           throw new ViolacaoDedadosIntegradosException("Email ja cadastrado no sistema!");
+        }
     }
 }
