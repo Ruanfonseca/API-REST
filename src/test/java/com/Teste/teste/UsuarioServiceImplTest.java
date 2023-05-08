@@ -3,6 +3,7 @@ package com.Teste.teste;
 import com.Teste.teste.Dominio.Usuario;
 import com.Teste.teste.Dominio.dto.UsuarioDto;
 import com.Teste.teste.Service.exceptions.ObjetoNaoEncontrado;
+import com.Teste.teste.Service.exceptions.ViolacaoDedadosIntegradosException;
 import com.Teste.teste.Service.impl.UsuarioServiceImpl;
 import com.Teste.teste.repository.UsuarioRepository;
 import org.junit.jupiter.api.Assertions;
@@ -15,11 +16,12 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -88,13 +90,59 @@ class UsuarioServiceImplTest {
     }
 
     @Test
-    void findAll(){
+    void whenFindAllThenRetornoAnListaDeUsuarios()
+    {
+         //retorne uma lista de usuarios
+         when(repository.findAll()).thenReturn(List.of(usuario));
+
+         List<Usuario> response = service.findALL();
+
+         assertNotNull(response);
+
+         //tamanho da lista
+         assertEquals(1,response.size());
+
+         /*assegurando que o objeto que esta vindo é do tipo usuario*/
+         assertEquals(Usuario.class,response.get(0).getClass());
+
+         assertEquals(ID,response.get(0).getId());
+         assertEquals(NAME,response.get(0).getNome());
+         assertEquals(EMAIL,response.get(0).getEmail());
+         assertEquals(PASSWORD,response.get(0).getSenha());
 
     }
 
     @Test
-    void create(){
+    void whenCreateThenRetornoComSucesso(){
 
+         /*para qualquer objeto passado , salve e retorne como usuario*/
+         when(repository.save(any())).thenReturn(usuario);
+         Usuario response = service.create(usuarioDto);
+
+         Assertions.assertNotNull(response);
+         Assertions.assertEquals(Usuario.class,response.getClass());
+         Assertions.assertEquals(ID,response.getId());
+        Assertions.assertEquals(NAME,response.getNome());
+        Assertions.assertEquals(EMAIL,response.getEmail());
+        Assertions.assertEquals(PASSWORD,response.getSenha());
+     }
+
+
+    @Test
+    void whenCreateThenRetornoComExcecaoDeViolacaoDeDados(){
+
+        /*Verifica o id do usuarioOptional com o do dto,se for diferente é porque esta querendo cria um novo
+         usuario com o mesmo email
+        *  */
+        when(repository.findByEmail(anyString())).thenReturn(optionalUsuario);
+
+        try {
+            optionalUsuario.get().setId(2);
+            service.create(usuarioDto);
+        }catch (Exception ex){
+            assertEquals(ViolacaoDedadosIntegradosException.class,ex.getClass());
+            assertEquals("Email ja cadastrado no sistema!",ex.getMessage());
+        }
     }
 
     @Test
