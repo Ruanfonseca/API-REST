@@ -22,7 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class UsuarioServiceImplTest {
@@ -181,9 +181,19 @@ class UsuarioServiceImplTest {
 
 
     @Test
-    void delete(){
+    void deleteComSucesso(){
 
-    }
+         when(repository.findById(anyInt())).thenReturn(optionalUsuario);
+
+         /*Não faça nada quando,o repository for chamado no metodo,
+         deleteById,passando qualquer valor inteiro*/
+        doNothing().when(repository).deleteById(anyInt());
+
+
+        service.delete(ID);
+      //verifique quantas vezes o metodo foi chamado
+      verify(repository,times(1)).deleteById(anyInt());
+     }
   private void startUsuario(){
 
          usuario = new Usuario(ID,NAME,EMAIL,PASSWORD);
