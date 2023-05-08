@@ -160,6 +160,26 @@ class UsuarioServiceImplTest {
         Assertions.assertEquals(PASSWORD,response.getSenha());
     }
 
+
+    @Test
+    void whenUpdateThenRetornoComExcecaoDeViolacaoDeDados(){
+
+        /*Verifica o id do usuarioOptional com o do dto,se for diferente é porque esta querendo cria um novo
+         usuario com o mesmo email
+        *  */
+        when(repository.findByEmail(anyString())).thenReturn(optionalUsuario);
+
+        try {
+            optionalUsuario.get().setId(2);
+            service.update(usuarioDto);
+        }catch (Exception ex){
+            assertEquals(ViolacaoDedadosIntegradosException.class,ex.getClass());
+            assertEquals("Email ja cadastrado no sistema!",ex.getMessage());
+        }
+    }
+
+
+
     @Test
     void delete(){
 
