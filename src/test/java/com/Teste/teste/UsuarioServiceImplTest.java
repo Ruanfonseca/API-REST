@@ -146,8 +146,18 @@ class UsuarioServiceImplTest {
     }
 
     @Test
-    void update(){
+    void whenUpdateThenRetornoComSucesso(){
 
+        /*para qualquer objeto passado , Edite e retorne como usuario*/
+        when(repository.save(any())).thenReturn(usuario);
+        Usuario response = service.update(usuarioDto);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(Usuario.class,response.getClass());
+        Assertions.assertEquals(ID,response.getId());
+        Assertions.assertEquals(NAME,response.getNome());
+        Assertions.assertEquals(EMAIL,response.getEmail());
+        Assertions.assertEquals(PASSWORD,response.getSenha());
     }
 
     @Test
