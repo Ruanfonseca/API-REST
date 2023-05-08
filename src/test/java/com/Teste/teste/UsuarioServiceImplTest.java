@@ -75,7 +75,6 @@ class UsuarioServiceImplTest {
 
     @Test
     void whenFindByIdThenRetornoAnObjetoNaoEncontradoException(){
-
          //quando passado qualquer id ,e ele não for encontrado , chama Obj não encontrado
          when(repository.findById(anyInt())).thenThrow(new ObjetoNaoEncontrado("Objeto não encontrado"));
 
