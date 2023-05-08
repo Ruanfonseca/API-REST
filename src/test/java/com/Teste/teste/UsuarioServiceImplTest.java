@@ -2,6 +2,7 @@ package com.Teste.teste;
 
 import com.Teste.teste.Dominio.Usuario;
 import com.Teste.teste.Dominio.dto.UsuarioDto;
+import com.Teste.teste.Service.exceptions.ObjetoNaoEncontrado;
 import com.Teste.teste.Service.impl.UsuarioServiceImpl;
 import com.Teste.teste.repository.UsuarioRepository;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -64,12 +66,26 @@ class UsuarioServiceImplTest {
          assertNotNull(response);
          //Asseguro que o objeto encontrado no banco é tipo USUARIO e não USUARIODTO
          //por opção de segurança
-        Assertions.assertEquals(Usuario.class,response.getClass());
+        assertEquals(Usuario.class,response.getClass());
+        assertEquals(ID,response.getId());
+        assertEquals(NAME,response.getNome());
+        assertEquals(EMAIL,response.getEmail());
 
-        Assertions.assertEquals(ID,response.getId());
-        Assertions.assertEquals(NAME,response.getNome());
-        Assertions.assertEquals(EMAIL,response.getEmail());
+    }
 
+    @Test
+    void whenFindByIdThenRetornoAnObjetoNaoEncontradoException(){
+
+         //quando passado qualquer id ,e ele não for encontrado , chama Obj não encontrado
+         when(repository.findById(anyInt())).thenThrow(new ObjetoNaoEncontrado("Objeto não encontrado"));
+
+         try {
+             service.findById(ID);
+         }catch (Exception ex){
+             //mockando a resposta
+             assertEquals(ObjetoNaoEncontrado.class,ex.getClass());
+
+         }
     }
 
     @Test
