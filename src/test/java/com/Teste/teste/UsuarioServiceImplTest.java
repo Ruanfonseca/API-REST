@@ -194,6 +194,22 @@ class UsuarioServiceImplTest {
       //verifique quantas vezes o metodo foi chamado
       verify(repository,times(1)).deleteById(anyInt());
      }
+
+    @Test
+    void deleteComObjetoNaoEncontradoExcecao(){
+       when(repository.findById(anyInt())).thenThrow(new ObjetoNaoEncontrado("Objeto não encontrado!!"));
+         try {
+           service.delete(ID);
+       }catch (Exception ex){
+        assertEquals(ObjetoNaoEncontrado.class,ex.getClass());
+             assertEquals("Objeto não encontrado!!",ex.getMessage());
+       }
+    }
+
+
+
+
+
   private void startUsuario(){
 
          usuario = new Usuario(ID,NAME,EMAIL,PASSWORD);
