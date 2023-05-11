@@ -93,9 +93,6 @@ void  whenFindByIdThenReturnSuccess(){
      assertEquals(NAME,response.getBody().get(INDEX).getNome());
      assertEquals(EMAIL,response.getBody().get(INDEX).getEmail());
      assertEquals(PASSWORD,response.getBody().get(INDEX).getSenha());
-
-
-
  }
  @Test
  void whenCreateThenRetornoCriacao(){
@@ -108,7 +105,19 @@ void  whenFindByIdThenReturnSuccess(){
        assertNotNull(response.getHeaders().get("Location"));
  }
  @Test
- void update(){
+ void whenUpdateThenRetornoComSucesso(){
+     when(service.update(usuarioDto)).thenReturn(usuario);
+     when(mapper.map(any(),any())).thenReturn(usuarioDto);
+
+     ResponseEntity<UsuarioDto> response = resource.update(ID,usuarioDto);
+     assertNotNull(response);
+     assertNotNull(response.getBody());
+     assertEquals(HttpStatus.OK,response.getStatusCode());
+     assertEquals(ResponseEntity.class,response.getClass());
+     assertEquals(UsuarioDto.class,response.getBody().getClass());
+     assertEquals(ID,response.getBody().getId());
+     assertEquals(NAME,response.getBody().getNome());
+     assertEquals(EMAIL,response.getBody().getEmail());
 
  }
   @Test
@@ -122,19 +131,5 @@ void  whenFindByIdThenReturnSuccess(){
         usuarioDto = new UsuarioDto(ID,NAME,EMAIL,PASSWORD);
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
