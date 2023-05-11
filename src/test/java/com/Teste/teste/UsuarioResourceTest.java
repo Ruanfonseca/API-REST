@@ -25,7 +25,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class UsuarioResourceTest {
@@ -55,7 +56,7 @@ public class UsuarioResourceTest {
 @Test
 void  whenFindByIdThenReturnSuccess(){
 
-    when(service.findById(Mockito.anyInt())).thenReturn(usuario);
+    when(service.findById(anyInt())).thenReturn(usuario);
 
     /*Qualquer classe que ele tentar converter de usuario para usuarioDto */
     when(mapper.map(any(),any())).thenReturn(usuarioDto);
@@ -121,9 +122,14 @@ void  whenFindByIdThenReturnSuccess(){
 
  }
   @Test
-  void delete(){
+  void whenDeleteComSucesso(){
+     doNothing().when(service).delete(anyInt());
 
-  }
+     ResponseEntity<UsuarioDto> response = resource.delete(ID);
+     assertEquals(ResponseEntity.class,response.getClass());
+     verify(service,times(1)).delete(anyInt());
+     assertEquals(HttpStatus.NO_CONTENT,response.getStatusCode());
+ }
 
     private void startUsuario(){
 
