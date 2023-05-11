@@ -207,9 +207,6 @@ class UsuarioServiceImplTest {
     }
 
 
-
-
-
   private void startUsuario(){
 
          usuario = new Usuario(ID,NAME,EMAIL,PASSWORD);
